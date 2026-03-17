@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from .forms import ProfileForm
 
 def home(request):
     return render(request, 'accounts/home.html')
@@ -38,13 +37,6 @@ def user_logout(request):
     return redirect('home')
 
 @login_required
-def profile(request):
-    if request.method == 'POST':
-        form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
-        if form.is_valid():
-            form.save()
-            return redirect('profile')
-    else:
-        form = ProfileForm(instance=request.user.profile)
+def profile_view(request):
+    return render(request, 'accounts/profile.html')
 
-    return render(request, 'accounts/profile.html', {'form': form})
