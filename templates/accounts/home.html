@@ -1,0 +1,9 @@
+<h1>Ana Sayfa</h1>
+
+{% if user.is_authenticated %}
+    <p>Hoşgeldin {{ user.username }}</p>
+    <a href="{% url 'logout' %}">Çıkış</a>
+{% else %}
+    <a href="{% url 'login' %}">Giriş Yap</a>
+    <a href="{% url 'register' %}">Kayıt Ol</a>
+{% endif %}
