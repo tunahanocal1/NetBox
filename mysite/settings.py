@@ -82,7 +82,10 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 import dj_database_url
 
 DATABASES = {
-'default': dj_database_url.config(default='postgresql://my_django_db_x3mk_user:7Ry4Wchbkc1BJGaK3NHbCNRjfsSRHruB@dpg-d6o2f0vkijhs73a0b6ig-a.frankfurt-postgres.render.com/my_django_db_x3mk')
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 

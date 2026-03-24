@@ -3,7 +3,6 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 import requests
-from .models import Book
 
 def home(request):
     return render(request, 'accounts/home.html')
@@ -60,8 +59,4 @@ def user_logout(request):
 def profile_view(request):
     return render(request, 'accounts/profile.html')
 
-
-def home(request):
-    books = Book.objects.all().order_by('-created_at')[:8]  # son eklenen 8 kitabı al
-    return render(request, 'accounts/home.html', {'books': books})
 
