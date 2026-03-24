@@ -1,4 +1,5 @@
 <!-- templates/accounts/home.html -->
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -109,23 +110,16 @@
         </div>
 
         <!-- Book showcase -->
-        <div class="book-showcase">
+         <div class="book-showcase">
+            {% for book in books %}
             <div class="book-card">
-                <img src="https://images-na.ssl-images-amazon.com/images/I/81eB+7+CkUL.jpg" alt="Book 1">
-                <p>The Great Gatsby</p>
+                <img src="{{ book.cover_image }}" alt="{{ book.title }}">
+                <p>{{ book.title }}</p>
             </div>
-            <div class="book-card">
-                <img src="https://images-na.ssl-images-amazon.com/images/I/91bYsX41DVL.jpg" alt="Book 2">
-                <p>To Kill a Mockingbird</p>
-            </div>
-            <div class="book-card">
-                <img src="https://images-na.ssl-images-amazon.com/images/I/81iqZ2HHD-L.jpg" alt="Book 3">
-                <p>1984</p>
-            </div>
-            <div class="book-card">
-                <img src="https://images-na.ssl-images-amazon.com/images/I/71kxa1-0mfL.jpg" alt="Book 4">
-                <p>Pride and Prejudice</p>
-            </div>
+            {% empty %}
+            <p>No books available yet.</p>
+            {% endfor %}
+        </div>
         </div>
     </div>
 </body>
