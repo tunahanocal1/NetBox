@@ -8,7 +8,7 @@
     {% csrf_token %}
     {{ form.as_p }}
 
-    <!-- İnce uzun login butonu -->
+    <!-- İnce uzun kayıt butonu -->
     <input type="submit" value="Register" style="
         width: 100%;
         padding: 0.6rem;
@@ -21,7 +21,7 @@
     ">
 </form>
 
-<!-- Link gibi create account -->
+<!-- Login link -->
 <p style="margin-top: 1rem; text-align:center;">
     Already have an account?
     <a href="{% url 'login' %}" style="

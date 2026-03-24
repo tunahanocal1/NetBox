@@ -2,14 +2,103 @@
 
 {% block content %}
 
-<div class="text-center">
-    {% if user.is_authenticated %}
-        <div class="alert alert-success">
-            Hi👋: <strong>{{ user.username }}</strong>
+<!-- HERO -->
+<section style="text-align:center; margin-top:40px;">
+    <h1 style="font-size:3rem;">Okuduğun kitapları keşfet, kaydet, paylaş</h1>
+    <p style="color:#aaa; margin-top:10px;">
+        NetBox ile kitap geçmişini oluştur ve yeni kitaplar keşfet
+    </p>
+
+    <div style="margin-top:20px;">
+        <a href="{% url 'register' %}" style="
+            background:#3b82f6;
+            padding:10px 20px;
+            border-radius:8px;
+            color:white;
+            text-decoration:none;
+            margin-right:10px;
+        ">Başla</a>
+
+        <a href="{% url 'login' %}" style="
+            color:#3b82f6;
+            text-decoration:none;
+        ">Giriş Yap</a>
+    </div>
+</section>
+
+<!-- POPÜLER KİTAPLAR -->
+<section style="margin-top:60px;">
+    <h2>Popüler Kitaplar</h2>
+
+    <div style="
+        display:flex;
+        gap:15px;
+        overflow-x:auto;
+        padding-top:15px;
+    ">
+        <!-- örnek kitap kartları -->
+        {% for i in "12345678" %}
+        <div style="
+            min-width:120px;
+            background:#1c1c1c;
+            padding:10px;
+            border-radius:10px;
+            text-align:center;
+        ">
+            <div style="
+                height:160px;
+                background:#2a2a2a;
+                border-radius:6px;
+                margin-bottom:10px;
+            "></div>
+            <small>Kitap {{ i }}</small>
         </div>
-    {% else %}
-        <p class="lead">👋Welcome to NetBox Login or Register to continiue</p>
-    {% endif %}
-</div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section style="margin-top:60px;">
+    <h2>Ne Yapabilirsin?</h2>
+
+    <div style="
+        display:grid;
+        grid-template-columns:repeat(auto-fit, minmax(200px,1fr));
+        gap:20px;
+        margin-top:20px;
+    ">
+        <div style="background:#1c1c1c; padding:20px; border-radius:10px;">
+            📚 Kitaplarını kaydet
+        </div>
+
+        <div style="background:#1c1c1c; padding:20px; border-radius:10px;">
+            ⭐ Puan ver
+        </div>
+
+        <div style="background:#1c1c1c; padding:20px; border-radius:10px;">
+            📝 Yorum yaz
+        </div>
+
+        <div style="background:#1c1c1c; padding:20px; border-radius:10px;">
+            🔍 Yeni kitap keşfet
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section style="text-align:center; margin-top:60px;">
+    <h2>Hemen başla</h2>
+    <a href="{% url 'register' %}" style="
+        display:inline-block;
+        margin-top:15px;
+        background:#3b82f6;
+        padding:10px 25px;
+        border-radius:8px;
+        color:white;
+        text-decoration:none;
+    ">
+        Ücretsiz Kayıt Ol
+    </a>
+</section>
 
 {% endblock %}
