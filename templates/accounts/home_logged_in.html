@@ -17,8 +17,6 @@
         <div class="book-card">
             {% if book.thumbnail %}
                 <img src="{{ book.thumbnail }}" alt="{{ book.title }}">
-            {% else %}
-                <img src="{% static 'images/default.jpg' %}" alt="No cover">
             {% endif %}
             <p>{{ book.title }}</p>
         </div>
