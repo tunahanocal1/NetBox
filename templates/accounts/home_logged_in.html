@@ -12,16 +12,20 @@
 </section>
 
 <!-- POPULAR BOOKS -->
-<div class="book-showcase">
-    {% for book in books %}
-        <div class="book-card">
+<section style="margin-top:60px;">
+    <h2>Popular Books</h2>
+
+    <div style="display:flex; gap:15px; overflow-x:auto;">
+        {% for book in books %}
+        <div style="min-width:120px; text-align:center;">
             {% if book.thumbnail %}
-                <img src="{{ book.thumbnail }}" alt="{{ book.title }}">
+                <img src="{{ book.thumbnail }}" style="width:100%; border-radius:6px;">
             {% endif %}
-            <p>{{ book.title }}</p>
+            <small>{{ book.title }}</small>
         </div>
-    {% endfor %}
-</div>
+        {% endfor %}
+    </div>
+</section>
 
 <!-- FEATURES -->
 <section style="margin-top:60px;">
@@ -49,6 +53,21 @@
             🔍 Discover new books
         </div>
     </div>
+</section>
+
+<!-- CTA -->
+<section style="text-align:center; margin-top:60px;">
+    <h2>Start your reading journey today</h2>
+    <a href="{% url 'register' %}" style="
+        display:inline-block;
+        margin-top:15px;
+        background:#3b82f6;
+        padding:10px 25px;
+        border-radius:8px;
+        color:white;
+        text-decoration:none;
+    ">
+    </a>
 </section>
 
 {% endblock %}
