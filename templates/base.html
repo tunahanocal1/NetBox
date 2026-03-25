@@ -109,7 +109,9 @@
         <!-- Navbar: kullanıcı durumu kontrolü -->
         <nav>
             {% if user.is_authenticated %}
-                <a href="{% url 'profile' %}">Profile</a>
+                <a href="{% url 'profile' %}">
+                    {{ user.username }}
+                </a>
             {% endif %}
         </nav>
     </header>
