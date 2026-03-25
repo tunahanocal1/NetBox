@@ -19,6 +19,21 @@
             align-items: center;
             text-align: center;
         }
+        .navbar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 40px;
+            z-index: 10;
+        }
+
+        .navbar-brand {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+        }
 
         .overlay {
             position: absolute;
@@ -67,11 +82,13 @@
 </head>
 
 <body>
+    <header class="navbar">
+        <a href="{% url 'home' %}" class="navbar-brand">NetBox</a>
+    </header>
     <div class="hero">
         <div class="overlay"></div>
 
         <div class="top-bar">
-            <a href="{% url 'home' %}" class="navbar-brand">NetBox</a>
             <a href="{% url 'login' %}">Sign In</a>
             <a href="{% url 'register' %}">Create Account</a>
         </div>
