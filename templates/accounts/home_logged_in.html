@@ -9,19 +9,48 @@
         Build your reading history and explore new books with NetBox
     </p>
 
+    <div style="margin-top:20px;">
+        <a href="{% url 'register' %}" style="
+            background:#3b82f6;
+            padding:10px 20px;
+            border-radius:8px;
+            color:white;
+            text-decoration:none;
+            margin-right:10px;
+        ">Get Started</a>
+
+        <a href="{% url 'login' %}" style="
+            color:#3b82f6;
+            text-decoration:none;
+        ">Login</a>
+    </div>
 </section>
 
 <!-- POPULAR BOOKS -->
 <section style="margin-top:60px;">
     <h2>Popular Books</h2>
 
-    <div style="display:flex; gap:15px; overflow-x:auto;">
-        {% for book in books %}
-        <div style="min-width:120px; text-align:center;">
-            {% if book.thumbnail %}
-                <img src="{{ book.thumbnail }}" style="width:100%; border-radius:6px;">
-            {% endif %}
-            <small>{{ book.title }}</small>
+    <div style="
+        display:flex;
+        gap:15px;
+        overflow-x:auto;
+        padding-top:15px;
+    ">
+        {% for i in "12345678" %}
+        <div style="
+            min-width:120px;
+            background:#1c1c1c;
+            padding:10px;
+            border-radius:10px;
+            text-align:center;
+        ">
+            <div style="
+                height:160px;
+                background:#2a2a2a;
+                border-radius:6px;
+                margin-bottom:10px;
+            "></div>
+            <small>Book {{ i }}</small>
         </div>
         {% endfor %}
     </div>
@@ -67,6 +96,7 @@
         color:white;
         text-decoration:none;
     ">
+        Sign Up for Free
     </a>
 </section>
 
