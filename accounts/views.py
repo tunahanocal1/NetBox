@@ -24,7 +24,7 @@ def home(request):
                 'thumbnail': volume.get('imageLinks', {}).get('thumbnail')
             })
 
-        return render(request, 'accounts/home.html', {'books': books})
+        return render(request, 'accounts/home_logged_in.html', {'books': books})
     
     else:
         # GİRİŞ YAPMAMIŞ → landing page
