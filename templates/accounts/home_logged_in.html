@@ -12,20 +12,18 @@
 </section>
 
 <!-- POPULAR BOOKS -->
-<section style="margin-top:60px;">
-    <h2>Popular Books</h2>
-
-    <div style="display:flex; gap:15px; overflow-x:auto;">
-        {% for book in books %}
-        <div style="min-width:120px; text-align:center;">
+<div class="book-showcase">
+    {% for book in books %}
+        <div class="book-card">
             {% if book.thumbnail %}
-                <img src="{{ book.thumbnail }}" style="width:100%; border-radius:6px;">
+                <img src="{{ book.thumbnail }}" alt="{{ book.title }}">
+            {% else %}
+                <img src="{% static 'images/default.jpg' %}" alt="No cover">
             {% endif %}
-            <small>{{ book.title }}</small>
+            <p>{{ book.title }}</p>
         </div>
-        {% endfor %}
-    </div>
-</section>
+    {% endfor %}
+</div>
 
 <!-- FEATURES -->
 <section style="margin-top:60px;">
