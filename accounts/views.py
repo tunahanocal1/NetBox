@@ -29,6 +29,13 @@ def home(request):
         return render(request, 'accounts/landing.html')
 
 
+def test_api(request):
+    try:
+        response = requests.get("https://www.googleapis.com/books/v1/volumes?q=harry+potter&maxResults=5")
+        return HttpResponse(f"Status: {response.status_code}, Content: {response.text[:500]}")
+    except Exception as e:
+        return HttpResponse(f"Error: {e}")
+
 def search(request):
     query = request.GET.get('q', '').strip()  # Boş gelirse boş string
     books = []
