@@ -70,13 +70,8 @@
             background: transparent;
             border: none;
             color: #aaa;
+            font-size: 18px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-        }
-
-        .search-btn:hover {
-            color: #fff;
         }
 
         /* NAV RIGHT */
@@ -156,6 +151,11 @@
 
 <header>
     <a href="{% url 'home' %}" class="logo">NetBox</a>
+
+    <form action="{% url 'search' %}" method="GET" class="search-form">
+        <input type="text" name="q" placeholder="Type here to search.." class="search-input">
+        <button type="submit" class="search-btn">🔍</button>
+    </form>
 
     <nav>
         {% if user.is_authenticated %}
