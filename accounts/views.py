@@ -28,6 +28,25 @@ def home(request):
         return render(request, 'accounts/landing.html')
 
 
+def search(request):
+    query = request.GET.get('q')
+    results = []
+
+    if query:
+        # Şimdilik statik liste üzerinden arama yapacağız
+        books = [
+            {"title": "1984", "image": "https://images-na.ssl-images-amazon.com/images/I/71kxa1-0mfL.jpg"},
+            {"title": "Sapiens", "image": "https://images-na.ssl-images-amazon.com/images/I/713jIoMO3UL.jpg"},
+            {"title": "Atomic Habits", "image": "https://images-na.ssl-images-amazon.com/images/I/91bYsX41DVL.jpg"},
+            {"title": "The Alchemist", "image": "https://images-na.ssl-images-amazon.com/images/I/71aFt4+OTOL.jpg"},
+        ]
+
+        results = [book for book in books if query.lower() in book["title"].lower()]
+
+    return render(request, "accounts/search.html", {
+        "results": results,
+        "query": query
+    })
 
 def register(request):
     if request.method == 'POST':

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Arama Sonuçları</h2>
+
+{% if query %}
+    <p>"{{ query }}" için sonuçlar:</p>
+{% endif %}
+
+<div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:20px; margin-top:20px;">
+    {% for book in results %}
+        <div style="background:#1a1a1a; padding:10px; border-radius:10px;">
+            <img src="{{ book.image }}" style="width:100%;">
+            <p>{{ book.title }}</p>
+        </div>
+    {% empty %}
+        <p>Sonuç bulunamadı.</p>
+    {% endfor %}
+</div>
+
+{% endblock %}

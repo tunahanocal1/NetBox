@@ -109,6 +109,11 @@
         <!-- Navbar: kullanıcı durumu kontrolü -->
         <nav>
             {% if user.is_authenticated %}
+                <form action="{% url 'search' %}" method="GET" style="display:inline;">
+                    <input type="text" name="q" placeholder="Kitap ara..." 
+                        style="padding:6px; border-radius:6px; border:none;">
+                </form>
+                
                 <a href="{% url 'profile' %}">
                     {{ user.username }}
                 </a>
