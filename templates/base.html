@@ -152,13 +152,13 @@
 <header>
     <a href="{% url 'home' %}" class="logo">NetBox</a>
 
-    <form action="{% url 'search' %}" method="GET" class="search-form">
-        <input type="text" name="q" placeholder="Type here to search.." class="search-input">
-        <button type="submit" class="search-btn">🔍</button>
-    </form>
-
     <nav>
         {% if user.is_authenticated %}
+            <form action="{% url 'search' %}" method="GET" class="search-form">
+                <input type="text" name="q" placeholder="Type here to search.." class="search-input">
+                <button type="submit" class="search-btn">🔍</button>
+            </form>
+            
             <a href="{% url 'profile' %}">{{ user.username }}</a>
         {% endif %}
     </nav>
