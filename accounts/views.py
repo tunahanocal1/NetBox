@@ -188,6 +188,24 @@ def toggle_book_status(request, olid):
     
     return redirect('home')
 
+@login_required
+def user_book_list(request, status_type):
+    # status_type: 'read', 'liked' veya 'watchlist' olacak
+    
+    if status_type == 'read':
+        books = UserBook.objects.filter(user=request.user, is_read=True)
+        title = "Books I've Read"
+    elif status_type == 'liked':
+        books = UserBook.objects.filter(user=request.user, is_liked=True)
+        title = "Favorite Books"
+    else:
+        books = UserBook.objects.filter(user=request.user, is_watchlist=True)
+        title = "Watchlist"
+
+    return render(request, 'accounts/user_book_list.html', {
+        'books': books,
+        'title': title
+    })
 
 @login_required
 def profile_view(request):
