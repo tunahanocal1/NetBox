@@ -65,13 +65,26 @@
 
     /* DİNAMİK BUTONLAR */
     .quick-actions { display: flex; justify-content: space-around; padding: 15px; background: #1b222b; border-top: 1px solid #333; }
-    .q-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 0.75rem; color: #9ab; cursor: pointer; }
-    .q-btn i { font-size: 1.4rem; transition: 0.2s; }
+    
+    .q-btn { 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        gap: 6px; 
+        font-size: 0.75rem; 
+        color: #9ab; 
+        cursor: pointer; 
+        background: none; 
+        border: none;
+        transition: 0.2s;
+    }
+    .q-btn i { font-size: 1.4rem; }
+    .q-btn:hover { color: #fff; }
     
     /* Aktif Renkler */
-    .q-btn#btn-read.active { color: #00c030; }
-    .q-btn#btn-like.active { color: #ff8000; }
-    .q-btn#btn-list.active { color: #3b82f6; }
+    .q-btn.active-read { color: #00c030 !important; }
+    .q-btn.active-like { color: #ff8000 !important; }
+    .q-btn.active-watchlist { color: #3b82f6 !important; }
 
     .review-card { background: #1c1c1c; padding: 20px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #00c030; }
 </style>
@@ -150,15 +163,39 @@
         </div>
 
         <div class="quick-actions">
-            <div class="q-btn" id="btn-read" onclick="toggleAction('btn-read')">
-                <i class="fas fa-eye"></i><span>Read</span>
-            </div>
-            <div class="q-btn" id="btn-like" onclick="toggleAction('btn-like')">
-                <i class="fas fa-heart"></i><span>Like</span>
-            </div>
-            <div class="q-btn" id="btn-list" onclick="toggleAction('btn-list')">
-                <i class="fas fa-plus"></i><span>List</span>
-            </div>
+            {% if user.is_authenticated %}
+                <form action="{% url 'toggle_book_status' olid %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="status_type" value="read">
+                    <input type="hidden" name="title" value="{{ book.title }}">
+                    <input type="hidden" name="thumbnail" value="{{ thumbnail }}">
+                    <button type="submit" class="q-btn {% if user_book_status.is_read %}active-read{% endif %}">
+                        <i class="fas fa-eye"></i><span>Read</span>
+                    </button>
+                </form>
+
+                <form action="{% url 'toggle_book_status' olid %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="status_type" value="liked">
+                    <input type="hidden" name="title" value="{{ book.title }}">
+                    <input type="hidden" name="thumbnail" value="{{ thumbnail }}">
+                    <button type="submit" class="q-btn {% if user_book_status.is_liked %}active-like{% endif %}">
+                        <i class="fas fa-heart"></i><span>Like</span>
+                    </button>
+                </form>
+
+                <form action="{% url 'toggle_book_status' olid %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="status_type" value="watchlist">
+                    <input type="hidden" name="title" value="{{ book.title }}">
+                    <input type="hidden" name="thumbnail" value="{{ thumbnail }}">
+                    <button type="submit" class="q-btn {% if user_book_status.is_watchlist %}active-watchlist{% endif %}">
+                        <i class="fas fa-plus"></i><span>List</span>
+                    </button>
+                </form>
+            {% else %}
+                <p style="font-size: 0.7rem; color: #555; text-align:center; width:100%">Login to track books</p>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -174,9 +211,6 @@
             text.classList.add('expanded');
             btn.innerText = 'less';
         }
-    }
-    function toggleAction(btnId) {
-        document.getElementById(btnId).classList.toggle('active');
     }
 </script>
 {% endblock %}

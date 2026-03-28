@@ -9,4 +9,5 @@ urlpatterns = [
     path('profile/', views.profile_view, name='profile'),
     path('search/', views.search, name='search'),
     path('book/<str:olid>/', views.book_detail, name='book_detail'),
+    path('toggle-status/<str:olid>/', views.toggle_book_status, name='toggle_book_status'),
 ]

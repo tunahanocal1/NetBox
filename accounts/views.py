@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 import requests
 from .models import BookReview, UserBook # UserBook modelini ekledik
 from .forms import ReviewForm
+from django.http import JsonResponse
 
 def home(request):
     if request.user.is_authenticated:
@@ -95,24 +96,24 @@ def profile_view(request):
 from .models import BookReview
 from .forms import ReviewForm
 
+from .models import BookReview, UserBook # UserBook modelini eklediğinden emin ol
+
 def book_detail(request, olid):
     url = f"https://openlibrary.org/works/{olid}.json"
     book = {}
-    thumbnail_url = None # Varsayılan olarak boş
+    thumbnail_url = None 
 
     try:
         response = requests.get(url)
         data = response.json()
-
         book['title'] = data.get('title', 'No Title')
 
-        # GÖRSEL MANTIĞI: OpenLibrary'den kapak ID'sini alıp URL oluşturuyoruz
+        # GÖRSEL MANTIĞI
         covers = data.get('covers')
         if covers and len(covers) > 0:
-            # Covers listesindeki ilk ID'yi kullanıyoruz
             thumbnail_url = f"https://covers.openlibrary.org/b/id/{covers[0]}-L.jpg"
 
-        # description
+        # Description
         desc = data.get('description')
         if isinstance(desc, dict):
             book['description'] = desc.get('value', '')
@@ -124,6 +125,12 @@ def book_detail(request, olid):
         book['title'] = "Error loading book"
         book['description'] = ""
 
+    # KULLANICI DURUMU (BURASI YENİ)
+    # Giriş yapmış kullanıcının bu kitapla etkileşimini kontrol ediyoruz
+    user_book_status = None
+    if request.user.is_authenticated:
+        user_book_status = UserBook.objects.filter(user=request.user, olid=olid).first()
+
     # REVIEWS
     reviews = BookReview.objects.filter(olid=olid).order_by('-created_at')
 
@@ -132,8 +139,8 @@ def book_detail(request, olid):
     if reviews.exists():
         avg_rating = sum(r.rating for r in reviews) / reviews.count()
 
-    # Form gönderme
-    if request.method == 'POST':
+    # Form gönderme (Review/Yorum için)
+    if request.method == 'POST' and 'rating' in request.POST:
         form = ReviewForm(request.POST)
         if form.is_valid() and request.user.is_authenticated:
             review = form.save(commit=False)
@@ -150,8 +157,36 @@ def book_detail(request, olid):
         'reviews': reviews,
         'form': form,
         'avg_rating': avg_rating,
-        'thumbnail': thumbnail_url # Şablona bu isimle gönderiyoruz
+        'thumbnail': thumbnail_url,
+        'olid': olid, # Şablonun butonlar için buna ihtiyacı var
+        'user_book_status': user_book_status, # Butonların rengi için buna ihtiyacı var
     })
+
+@login_required
+def toggle_book_status(request, olid):
+    if request.method == "POST":
+        status_type = request.POST.get('status_type') # 'read', 'liked' veya 'watchlist'
+        title = request.POST.get('title')
+        thumbnail = request.POST.get('thumbnail')
+
+        # Kayıt varsa getir, yoksa oluştur
+        user_book, created = UserBook.objects.get_or_create(
+            user=request.user, 
+            olid=olid,
+            defaults={'title': title, 'thumbnail': thumbnail}
+        )
+
+        if status_type == 'read':
+            user_book.is_read = not user_book.is_read
+        elif status_type == 'liked':
+            user_book.is_liked = not user_book.is_liked
+        elif status_type == 'watchlist':
+            user_book.is_watchlist = not user_book.is_watchlist
+        
+        user_book.save()
+        return redirect('book_detail', olid=olid)
+    
+    return redirect('home')
 
 
 @login_required
@@ -166,3 +201,6 @@ def profile_view(request):
         'liked_books': liked_books,
         'watchlist_books': watchlist_books,
     })
+
+
+
