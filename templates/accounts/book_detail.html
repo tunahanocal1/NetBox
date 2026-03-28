@@ -1,115 +1,213 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
+<style>
+    /* GENEL SAYFA YAPISI */
+    .container-detail {
+        max-width: 1100px;
+        margin: 40px auto;
+        padding: 0 20px;
+        display: grid;
+        grid-template-columns: 230px 1fr 280px; /* Kapak | Detay | Aksiyon Paneli */
+        gap: 40px;
+        color: #e1e4e8;
+    }
 
-<div style="max-width:900px; margin:40px auto; color:white;">
+    /* SOL KOLON: KİTAP KAPAĞI */
+    .book-aside {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
 
-    <!-- 📚 BOOK HEADER -->
-    <div style="
-        display:flex;
-        gap:30px;
-        margin-bottom:40px;
-        background:#1c1c1c;
-        padding:20px;
-        border-radius:12px;
-    ">
+    .book-cover-main {
+        width: 100%;
+        border-radius: 4px;
+        border: 1px solid #333;
+        box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
 
+    /* ORTA KOLON: BİLGİLER */
+    .book-main-info h1 {
+        font-size: 2.2rem;
+        font-weight: 800;
+        margin: 0;
+        color: #fff;
+    }
+
+    .book-meta {
+        font-size: 1.1rem;
+        color: #9ab;
+        margin: 10px 0 20px 0;
+    }
+
+    .book-description {
+        line-height: 1.6;
+        color: #9ab;
+        font-size: 1rem;
+        border-bottom: 1px solid #333;
+        padding-bottom: 30px;
+        margin-bottom: 30px;
+    }
+
+    /* SAĞ KOLON: AKSİYON PANELİ (Letterboxd Tarzı) */
+    .action-panel {
+        background: #2c3440;
+        border-radius: 8px;
+        overflow: hidden;
+        height: fit-content;
+    }
+
+    .action-top {
+        display: flex;
+        justify-content: space-around;
+        padding: 15px;
+        background: #456;
+        border-bottom: 1px solid #567;
+    }
+
+    .action-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.75rem;
+        color: #bcd;
+        cursor: pointer;
+    }
+    .action-btn:hover { color: #fff; }
+
+    .rating-section {
+        padding: 20px;
+        text-align: center;
+    }
+
+    .star-rating-v2 {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: center;
+        gap: 5px;
+        font-size: 1.8rem;
+    }
+
+    .star-rating-v2 input { display: none; }
+    .star-rating-v2 label { color: #456; cursor: pointer; transition: 0.2s; }
+    .star-rating-v2 input:checked ~ label,
+    .star-rating-v2 label:hover,
+    .star-rating-v2 label:hover ~ label { color: #00c030; }
+
+    /* YORUMLAR */
+    .reviews-section {
+        margin-top: 40px;
+        grid-column: 2 / 3; /* Orta kolonda kalsın */
+    }
+
+    .review-card {
+        background: #1c1c1c;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        border-left: 4px solid #00c030;
+    }
+
+    .review-user { font-weight: bold; display: block; margin-bottom: 5px; }
+    .review-text { color: #9ab; font-size: 0.95rem; }
+
+    /* TEXTAREA STYLE */
+    textarea {
+        width: 100%;
+        background: #14181c;
+        border: 1px solid #333;
+        color: white;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 15px 0;
+        resize: vertical;
+    }
+</style>
+
+<div class="container-detail">
+    
+    <aside class="book-aside">
         {% if book.covers %}
-        <img src="{{ book.covers.0 }}" style="width:150px; border-radius:8px;">
+            <img src="{{ book.covers.0 }}" class="book-cover-main" alt="{{ book.title }}">
+        {% else %}
+            <div style="height: 330px; background: #222; border-radius: 4px; display: flex; align-items: center; justify-content: center;">No Image</div>
         {% endif %}
+        
+        <div style="display:flex; justify-content: space-around; color: #9ab; font-size: 0.8rem;">
+            <span>👁️ 292K</span>
+            <span>📂 80K</span>
+            <span>🧡 81K</span>
+        </div>
+    </aside>
 
-        <div>
-            <h2 style="margin-bottom:10px;">{{ book.title }}</h2>
-            <p style="color:#aaa;">{{ book.authors|join:", " }}</p>
+    <div class="book-main-info">
+        <h1>{{ book.title }}</h1>
+        <div class="book-meta">
+            <span>{{ book.first_publish_year|default:"N/A" }}</span> 
+            <span style="margin: 0 10px;">•</span>
+            <span>{{ book.authors|join:", " }}</span>
+        </div>
 
-            {% if avg_rating %}
-            <p style="margin-top:10px;">⭐ {{ avg_rating|floatformat:1 }}/5</p>
+        <div class="book-description">
+            <h3 style="color:#fff; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Description</h3>
+            <p>{{ book.description|default:"No description available." }}</p>
+        </div>
+
+        <div class="reviews-section">
+            <h3 style="border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 20px;">Reviews</h3>
+            
+            {% for review in reviews %}
+            <div class="review-card">
+                <span class="review-user">{{ review.user.username }}</span>
+                <span style="color: #00c030; font-size: 0.8rem;">★ ★ ★ ★ ★</span>
+                <p class="review-text">{{ review.comment }}</p>
+            </div>
+            {% empty %}
+            <p style="color: #678;">Be the first to review this book.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="action-panel">
+        <div class="action-top">
+            <div class="action-btn"><span>👁️</span> Read</div>
+            <div class="action-btn"><span>🧡</span> Like</div>
+            <div class="action-btn"><span>🕒</span> List</div>
+        </div>
+
+        <div class="rating-section">
+            <p style="font-size: 0.8rem; color: #9ab; margin-bottom: 10px;">Rate</p>
+            {% if user.is_authenticated %}
+            <form method="POST">
+                {% csrf_token %}
+                <div class="star-rating-v2">
+                    <input type="radio" name="rating" value="5" id="v2-star5"><label for="v2-star5">★</label>
+                    <input type="radio" name="rating" value="4" id="v2-star4"><label for="v2-star4">★</label>
+                    <input type="radio" name="rating" value="3" id="v2-star3"><label for="v2-star3">★</label>
+                    <input type="radio" name="rating" value="2" id="v2-star2"><label for="v2-star2">★</label>
+                    <input type="radio" name="rating" value="1" id="v2-star1"><label for="v2-star1">★</label>
+                </div>
+                {{ form.comment }}
+                <button type="submit" style="background:#00c030; width:100%; border:none; padding:10px; border-radius:4px; color:white; font-weight:bold; cursor:pointer; margin-top:10px;">
+                    Review or Log...
+                </button>
+            </form>
+            {% else %}
+            <p style="font-size: 0.8rem;">Login to rate.</p>
             {% endif %}
         </div>
 
-    </div>
-
-    <!-- 📖 DESCRIPTION -->
-    <div style="
-        background:#1c1c1c;
-        padding:20px;
-        border-radius:12px;
-        margin-bottom:30px;
-    ">
-        <h3>Description</h3>
-        <p style="color:#ccc; line-height:1.6;">
-            {{ book.description|default:"No description available." }}
-        </p>
-    </div>
-
-    <!-- ✍️ REVIEW FORM -->
-    <div style="
-        background:#1c1c1c;
-        padding:20px;
-        border-radius:12px;
-        margin-bottom:30px;
-    ">
-        <h3>Write a Review</h3>
-
-        {% if user.is_authenticated %}
-        <form method="POST">
-            {% csrf_token %}
-
-            <!-- ⭐ yıldız -->
-            <div class="star-rating">
-                <input type="radio" name="rating" value="5" id="star5"><label for="star5">★</label>
-                <input type="radio" name="rating" value="4" id="star4"><label for="star4">★</label>
-                <input type="radio" name="rating" value="3" id="star3"><label for="star3">★</label>
-                <input type="radio" name="rating" value="2" id="star2"><label for="star2">★</label>
-                <input type="radio" name="rating" value="1" id="star1"><label for="star1">★</label>
+        <div style="background: #14181c; padding: 15px; border-top: 1px solid #333;">
+            <p style="font-size: 0.8rem; color: #9ab;">AVERAGE RATING</p>
+            <div style="display:flex; align-items:baseline; gap:10px;">
+                <span style="font-size: 1.5rem; font-weight: bold; color: #fff;">{{ avg_rating|floatformat:1|default:"0.0" }}</span>
+                <span style="color: #00c030;">★★★★★</span>
             </div>
-
-            <br>
-
-            {{ form.comment }}
-
-            <br><br>
-
-            <button style="
-                background:#00c853;
-                padding:10px 20px;
-                border:none;
-                border-radius:8px;
-                color:white;
-                cursor:pointer;
-            ">
-                Gönder
-            </button>
-        </form>
-        {% else %}
-        <p>Yorum yapmak için giriş yap.</p>
-        {% endif %}
-    </div>
-
-    <!-- 💬 REVIEWS -->
-    <div style="
-        background:#1c1c1c;
-        padding:20px;
-        border-radius:12px;
-    ">
-        <h3>Reviews</h3>
-
-        {% for review in reviews %}
-        <div style="
-            margin-top:15px;
-            padding:15px;
-            background:#2a2a2a;
-            border-radius:10px;
-        ">
-            <strong>{{ review.user.username }}</strong>
-            <p style="color:#00c853;">⭐ {{ review.rating }}/5</p>
-            <p style="color:#ccc;">{{ review.comment }}</p>
         </div>
-        {% empty %}
-        <p>No reviews yet.</p>
-        {% endfor %}
     </div>
 
 </div>
-
 {% endblock %}
