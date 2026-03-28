@@ -129,6 +129,7 @@ def book_detail(request, olid):
             review = form.save(commit=False)
             review.user = request.user
             review.olid = olid
+            review.rating = request.POST.get('rating')
             review.save()
             return redirect('book_detail', olid=olid)
     else:

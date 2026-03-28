@@ -23,17 +23,28 @@
 <form method="POST">
     {% csrf_token %}
 
-    <label>Puan (1-5):</label>
-    {{ form.rating }}
+    <div class="star-rating">
+        <input type="radio" name="rating" value="5" id="star5"><label for="star5">★</label>
+        <input type="radio" name="rating" value="4" id="star4"><label for="star4">★</label>
+        <input type="radio" name="rating" value="3" id="star3"><label for="star3">★</label>
+        <input type="radio" name="rating" value="2" id="star2"><label for="star2">★</label>
+        <input type="radio" name="rating" value="1" id="star1"><label for="star1">★</label>
+    </div>
 
     <br><br>
 
     <label>Yorum:</label><br>
-    {{ form.comment }}
+    <textarea name="comment" style="
+        width:100%;
+        background:#1e1e1e;
+        color:white;
+        border:1px solid #444;
+        border-radius:8px;
+        padding:10px;
+        resize:vertical;
+    "></textarea>
 
-    <br><br>
-
-    <button type="submit">Gönder</button>
+    <button type="submit">Submit</button>
 </form>
 {% else %}
 <p>Yorum yapmak için giriş yapmalısın.</p>

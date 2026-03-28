@@ -21,7 +21,32 @@
             text-decoration: none;
             color: inherit;
         }
+        .star-rating {
+            direction: rtl;
+            display: inline-flex;
+        }
 
+        .star-rating input {
+            display: none;
+        }
+
+        .star-rating label {
+            font-size: 30px;
+            color: #444;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        /* hover efekti */
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: #00c853;
+        }
+
+        /* seçili yıldızlar */
+        .star-rating input:checked ~ label {
+            color: #00c853;
+        }
         /* HEADER */
         header {
             display: flex;
