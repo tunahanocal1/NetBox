@@ -1,86 +1,64 @@
 {% extends "base.html" %}
 
 {% block content %}
+<h2>{{ book.title }}</h2>
 
-<div style="
-    position:relative;
-    height:100vh;
-    color:white;
-    overflow:hidden;
-">
+<p><strong>Authors:</strong> {{ book.authors|join:", " }}</p>
 
-    <!-- BACKGROUND IMAGE -->
-    {% if book.covers %}
-    <div style="
-        position:absolute;
-        top:0;
-        left:0;
-        width:100%;
-        height:100%;
-        background:url('{{ book.covers.0 }}') center/cover no-repeat;
-        filter: blur(2px);
-        transform: scale(1.05);
-    "></div>
-    {% endif %}
-
-    <!-- DARK OVERLAY -->
-    <div style="
-        position:absolute;
-        top:0;
-        left:0;
-        width:100%;
-        height:100%;
-        background: linear-gradient(to right, rgba(0,0,0,0.9), rgba(0,0,0,0.2));
-    "></div>
-
-    <!-- CONTENT -->
-    <div style="
-        position:relative;
-        z-index:2;
-        max-width:600px;
-        padding:80px;
-    ">
-
-        <h1 style="font-size:48px; margin-bottom:10px;">
-            {{ book.title }}
-        </h1>
-
-        <p style="color:#aaa; margin-bottom:20px;">
-            {{ book.authors|join:", " }}
-        </p>
-
-        {% if book.description %}
-        <p style="line-height:1.6; margin-bottom:30px;">
-            {{ book.description|truncatewords:40 }}
-        </p>
-        {% endif %}
-
-        <!-- BUTTONS -->
-        <div style="display:flex; gap:15px;">
-            <a href="#" style="
-                background:#00c853;
-                padding:12px 25px;
-                border-radius:8px;
-                text-decoration:none;
-                color:white;
-                font-weight:bold;
-            ">
-                ▶ READ
-            </a>
-
-            <a href="javascript:history.back()" style="
-                border:1px solid #aaa;
-                padding:12px 25px;
-                border-radius:8px;
-                text-decoration:none;
-                color:white;
-            ">
-                ⬅ BACK
-            </a>
-        </div>
-
+{% if book.covers %}
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        {% for cover in book.covers %}
+            <img src="{{ cover }}" style="height:300px; border-radius:6px;">
+        {% endfor %}
     </div>
+{% endif %}
 
+{% if avg_rating %}
+<p>⭐ Ortalama Puan: {{ avg_rating|floatformat:1 }}/5</p>
+{% else %}
+<p>Henüz puan yok</p>
+{% endif %}
+
+{% if user.is_authenticated %}
+<form method="POST">
+    {% csrf_token %}
+
+    <label>Puan (1-5):</label>
+    {{ form.rating }}
+
+    <br><br>
+
+    <label>Yorum:</label><br>
+    {{ form.comment }}
+
+    <br><br>
+
+    <button type="submit">Gönder</button>
+</form>
+{% else %}
+<p>Yorum yapmak için giriş yapmalısın.</p>
+{% endif %}
+
+
+
+{% if book.description %}
+    <h3>Description</h3>
+    <p>{{ book.description }}</p>
+{% else %}
+    <p>No description available.</p>
+{% endif %}
+
+<h3>Yorumlar</h3>
+
+{% for review in reviews %}
+<div style="margin-bottom:15px; padding:10px; background:#222; border-radius:8px;">
+    <strong>{{ review.user.username }}</strong>
+    <p>⭐ {{ review.rating }}/5</p>
+    <p>{{ review.comment }}</p>
 </div>
+{% empty %}
+<p>Henüz yorum yok.</p>
+{% endfor %}
 
+<a href="{% url 'search' %}?q=">Back to search</a>
 {% endblock %}

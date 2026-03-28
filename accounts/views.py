@@ -90,32 +90,53 @@ def profile_view(request):
     return render(request, 'accounts/profile.html')
 
 
+from .models import BookReview
+from .forms import ReviewForm
+
 def book_detail(request, olid):
-    """
-    Open Library API üzerinden tek bir kitabın detayını getirir.
-    """
     url = f"https://openlibrary.org/works/{olid}.json"
     book = {}
+
     try:
         response = requests.get(url)
         data = response.json()
-        book['title'] = data.get('title', 'No Title')
-        book['description'] = ''
-        # description bazen dict bazen string olarak gelir
-        if isinstance(data.get('description'), dict):
-            book['description'] = data['description'].get('value', '')
-        elif isinstance(data.get('description'), str):
-            book['description'] = data['description']
-        book['authors'] = []
-        for author in data.get('authors', []):
-            # author key ile detay alıyoruz
-            author_url = f"https://openlibrary.org{author['author']['key']}.json"
-            a_res = requests.get(author_url).json()
-            book['authors'].append(a_res.get('name', 'Unknown'))
-        book['covers'] = []
-        for cover_id in data.get('covers', []):
-            book['covers'].append(f"https://covers.openlibrary.org/b/id/{cover_id}-L.jpg")
-    except Exception as e:
-        print(f"Open Library book detail error: {e}")
 
-    return render(request, 'accounts/book_detail.html', {'book': book})
+        book['title'] = data.get('title', 'No Title')
+
+        # description
+        desc = data.get('description')
+        if isinstance(desc, dict):
+            book['description'] = desc.get('value', '')
+        else:
+            book['description'] = desc
+
+    except:
+        book['title'] = "Error loading book"
+        book['description'] = ""
+
+    # REVIEWS
+    reviews = BookReview.objects.filter(olid=olid).order_by('-created_at')
+
+    # Ortalama rating
+    avg_rating = None
+    if reviews:
+        avg_rating = sum(r.rating for r in reviews) / reviews.count()
+
+    # Form gönderme
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid() and request.user.is_authenticated:
+            review = form.save(commit=False)
+            review.user = request.user
+            review.olid = olid
+            review.save()
+            return redirect('book_detail', olid=olid)
+    else:
+        form = ReviewForm()
+
+    return render(request, 'accounts/book_detail.html', {
+        'book': book,
+        'reviews': reviews,
+        'form': form,
+        'avg_rating': avg_rating
+    })
