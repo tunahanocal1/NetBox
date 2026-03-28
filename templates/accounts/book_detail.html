@@ -3,23 +3,23 @@
 
 {% block content %}
 <style>
-    /* ANA KONTEYNER: Grid yapısını sabitleyerek kaymaları önlüyoruz */
+    /* ANA YAPI: Sabit ve Kaymaları Önleyen Grid */
     .container-detail {
         max-width: 1050px;
         margin: 40px auto;
         padding: 0 20px;
         display: grid;
-        grid-template-columns: 210px 1fr 240px; /* Sütun genişliklerini sabitledik */
+        grid-template-columns: 210px 1fr 240px;
         gap: 30px;
         color: #e1e4e8;
-        align-items: start; /* Kutuların yukarıda sabit kalmasını sağlar */
+        align-items: start;
     }
 
     /* SOL KOLON: KİTAP KAPAĞI */
     .book-aside {
         width: 210px;
-        position: sticky; /* Sayfa kayınca kapak yukarıda sabit kalabilir */
-        top: 100px;
+        position: sticky;
+        top: 20px;
     }
 
     .book-cover-main {
@@ -45,22 +45,44 @@
         margin: 8px 0 20px 0;
     }
 
-    .book-description {
+    /* AÇIKLAMA: "Daha Fazla" Mantığı */
+    .description-container {
+        position: relative;
         line-height: 1.6;
         color: #9ab;
         font-size: 0.95rem;
-        padding-bottom: 20px;
         margin-bottom: 30px;
     }
 
-    /* SAĞ KOLON: KÜÇÜLTÜLMÜŞ AKSİYON PANELİ */
+    .description-text {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 4; /* Varsayılan olarak 4 satır gösterir */
+        -webkit-box-orient: vertical;
+    }
+
+    .description-text.expanded {
+        display: block; /* Tıklandığında hepsini gösterir */
+    }
+
+    .read-more-btn {
+        background: none;
+        border: none;
+        color: #00c030;
+        cursor: pointer;
+        padding: 0;
+        font-weight: bold;
+        margin-top: 5px;
+        display: inline-block;
+    }
+
+    /* SAĞ KOLON: SABİT KÜÇÜK PANEL */
     .action-panel {
         background: #2c3440;
         border-radius: 8px;
-        overflow: hidden;
-        width: 240px; /* Genişliği sabitledik */
+        width: 240px;
         position: sticky;
-        top: 100px; /* Kutunun yeri her kitapta aynı (sabit) olur */
+        top: 20px;
     }
 
     .rating-section {
@@ -83,13 +105,12 @@
     .star-rating-v2 label:hover,
     .star-rating-v2 label:hover ~ label { color: #00c030; }
 
-    /* YORUM ALANI */
     textarea {
         width: 100%;
         background: #14181c;
         border: 1px solid #333;
         color: white;
-        padding: 10px;
+        padding: 8px;
         border-radius: 5px;
         font-size: 0.85rem;
         resize: none;
@@ -105,10 +126,8 @@
         font-weight: bold;
         cursor: pointer;
         margin-top: 10px;
-        font-size: 0.9rem;
     }
 
-    /* REVIEWS */
     .review-card {
         background: #1c1c1c;
         padding: 15px;
@@ -121,13 +140,16 @@
 <div class="container-detail">
     
     <aside class="book-aside">
-        {% if book.covers %}
+        {% if book.covers and book.covers.0 %}
             <img src="{{ book.covers.0 }}" class="book-cover-main">
         {% elif book.thumbnail %}
             <img src="{{ book.thumbnail }}" class="book-cover-main">
+        {% elif book.image %}
+            <img src="{{ book.image }}" class="book-cover-main">
         {% else %}
-            <div style="height: 310px; background: #222; border-radius: 4px; display: flex; align-items: center; justify-content: center; border: 1px solid #333;">
-                <span style="color: #555;">No Cover</span>
+            <div style="height: 310px; background: #222; border-radius: 4px; display: flex; flex-direction:column; align-items: center; justify-content: center; border: 1px solid #333;">
+                <span style="font-size: 2rem;">📚</span>
+                <span style="color: #555; font-size: 0.8rem; margin-top:10px;">No Cover Found</span>
             </div>
         {% endif %}
     </aside>
@@ -140,8 +162,13 @@
             <span>{{ book.authors|join:", " }}</span>
         </div>
 
-        <div class="book-description">
-            <p>{{ book.description|default:"No description available." }}</p>
+        <div class="description-container">
+            <div id="descText" class="description-text">
+                {{ book.description|default:"No description available." }}
+            </div>
+            {% if book.description and book.description|length > 200 %}
+                <button id="readMoreBtn" class="read-more-btn" onclick="toggleDescription()">... more</button>
+            {% endif %}
         </div>
 
         <div class="reviews-section">
@@ -165,7 +192,7 @@
             {% if user.is_authenticated %}
             <form method="POST">
                 {% csrf_token %}
-                <p style="font-size: 0.75rem; color: #9ab; margin-top: 0;">RATE THIS BOOK</p>
+                <p style="font-size: 0.7rem; color: #9ab; margin-top: 0; letter-spacing: 1px;">RATE THIS BOOK</p>
                 <div class="star-rating-v2">
                     <input type="radio" name="rating" value="5" id="v2-star5"><label for="v2-star5">★</label>
                     <input type="radio" name="rating" value="4" id="v2-star4"><label for="v2-star4">★</label>
@@ -177,7 +204,7 @@
                 <button type="submit" class="submit-btn">Save Review</button>
             </form>
             {% else %}
-            <p style="font-size: 0.8rem; margin: 0;">Log in to rate this book.</p>
+            <p style="font-size: 0.8rem; margin: 0;">Log in to rate.</p>
             {% endif %}
         </div>
 
@@ -191,4 +218,20 @@
     </div>
 
 </div>
+
+<script>
+    function toggleDescription() {
+        const text = document.getElementById('descText');
+        const btn = document.getElementById('readMoreBtn');
+        
+        if (text.classList.contains('expanded')) {
+            text.classList.remove('expanded');
+            btn.innerText = '... more';
+        } else {
+            text.classList.add('expanded');
+            btn.innerText = 'less';
+        }
+    }
+</script>
+
 {% endblock %}
