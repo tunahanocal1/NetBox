@@ -5,7 +5,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 <style>
-    /* ANA KONTEYNER */
     .container-detail {
         max-width: 1050px;
         margin: 40px auto;
@@ -17,13 +16,8 @@
         align-items: start;
     }
 
-    /* SOL KOLON: KİTAP KAPAĞI */
-    .book-aside {
-        width: 210px;
-        position: sticky;
-        top: 20px;
-    }
-
+    /* SOL: KAPAK */
+    .book-aside { width: 210px; position: sticky; top: 20px; }
     .book-cover-main {
         width: 100%;
         height: 310px;
@@ -33,11 +27,10 @@
         border: 1px solid #333;
     }
 
-    /* ORTA KOLON: BİLGİLER */
+    /* ORTA: BİLGİLER */
     .book-main-info h1 { font-size: 2.2rem; font-weight: 800; margin: 0; color: #fff; }
     .book-meta { font-size: 1.1rem; color: #9ab; margin: 8px 0 20px 0; }
-
-    /* AÇIKLAMA: "Daha Fazla" */
+    
     .description-text {
         line-height: 1.6;
         color: #9ab;
@@ -48,9 +41,9 @@
         -webkit-box-orient: vertical;
     }
     .description-text.expanded { display: block; -webkit-line-clamp: unset; }
-    .read-more-btn { background: none; border: none; color: #00c030; cursor: pointer; font-weight: bold; margin-top: 10px; font-size: 0.9rem; }
+    .read-more-btn { background: none; border: none; color: #00c030; cursor: pointer; font-weight: bold; margin-top: 10px; }
 
-    /* SAĞ KOLON: AKSİYON PANELİ */
+    /* SAĞ: PANEL */
     .action-panel {
         background: #2c3440;
         border-radius: 8px;
@@ -58,7 +51,6 @@
         position: sticky;
         top: 20px;
         overflow: hidden;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
     .rating-section { padding: 20px 15px; text-align: center; }
     .star-rating-v2 { display: flex; flex-direction: row-reverse; justify-content: center; gap: 5px; font-size: 1.8rem; margin-bottom: 15px; }
@@ -71,12 +63,11 @@
 
     .avg-rating-box { background: #14181c; padding: 15px; border-top: 1px solid #333; text-align: center; }
 
-    /* DİNAMİK BUTONLAR (READ, LIKE, LIST) */
+    /* DİNAMİK BUTONLAR */
     .quick-actions { display: flex; justify-content: space-around; padding: 15px; background: #1b222b; border-top: 1px solid #333; }
-    .q-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 0.75rem; color: #9ab; cursor: pointer; transition: 0.2s; }
-    .q-btn i { font-size: 1.4rem; }
-    .q-btn:hover { color: #fff; }
-
+    .q-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 0.75rem; color: #9ab; cursor: pointer; }
+    .q-btn i { font-size: 1.4rem; transition: 0.2s; }
+    
     /* Aktif Renkler */
     .q-btn#btn-read.active { color: #00c030; }
     .q-btn#btn-like.active { color: #ff8000; }
@@ -88,16 +79,12 @@
 <div class="container-detail">
     
     <aside class="book-aside">
-        {% if book.thumbnail %}
-            <img src="{{ book.thumbnail }}" class="book-cover-main" alt="{{ book.title }}">
-        {% elif book.covers and book.covers.0 %}
-            <img src="{{ book.covers.0 }}" class="book-cover-main" alt="{{ book.title }}">
-        {% elif book.image %}
-            <img src="{{ book.image }}" class="book-cover-main" alt="{{ book.title }}">
+        {% if thumbnail %}
+            <img src="{{ thumbnail }}" class="book-cover-main">
         {% else %}
             <div style="height: 310px; background: #222; border-radius: 4px; display: flex; flex-direction:column; align-items: center; justify-content: center; border: 1px solid #333;">
-                <i class="fas fa-book" style="font-size: 3rem; color: #444;"></i>
-                <span style="color: #555; font-size: 0.8rem; margin-top:10px;">Görsel Bulunamadı</span>
+                <i class="fas fa-image" style="font-size: 3rem; color: #444;"></i>
+                <p style="color: #555; font-size: 0.8rem; margin-top:10px;">No Cover Found</p>
             </div>
         {% endif %}
     </aside>
@@ -105,32 +92,30 @@
     <div class="book-main-info">
         <h1>{{ book.title }}</h1>
         <div class="book-meta">
-            <span>{{ book.first_publish_year|default:"" }}</span> 
-            {% if book.authors %}<span style="margin: 0 10px;">•</span>{% endif %}
             <span>{{ book.authors|join:", " }}</span>
         </div>
 
         <div class="description-container">
             <div id="descText" class="description-text">
-                {{ book.description|default:"Bu kitap için açıklama bulunamadı." }}
+                {{ book.description|default:"No description available." }}
             </div>
             {% if book.description and book.description|length > 300 %}
-                <button id="readMoreBtn" class="read-more-btn" onclick="toggleDescription()">... daha fazla</button>
+                <button id="readMoreBtn" class="read-more-btn" onclick="toggleDescription()">... more</button>
             {% endif %}
         </div>
 
         <div class="reviews-section">
-            <h3 style="margin-top: 40px; border-bottom: 1px solid #333; padding-bottom: 10px;">Yorumlar</h3>
+            <h3 style="margin-top: 40px; border-bottom: 1px solid #333; padding-bottom: 10px;">Reviews</h3>
             {% for review in reviews %}
             <div class="review-card">
                 <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                    <strong style="color: #fff;">{{ review.user.username }}</strong>
+                    <strong>{{ review.user.username }}</strong>
                     <span style="color: #00c030;">★ {{ review.rating }}</span>
                 </div>
                 <p style="color: #9ab; margin: 0;">{{ review.comment }}</p>
             </div>
             {% empty %}
-            <p style="color: #678; margin-top:15px;">Henüz yorum yok. İlk yorumu sen yap!</p>
+            <p style="color: #678;">No reviews yet.</p>
             {% endfor %}
         </div>
     </div>
@@ -140,7 +125,7 @@
             {% if user.is_authenticated %}
             <form method="POST">
                 {% csrf_token %}
-                <p style="font-size: 0.7rem; color: #9ab; margin-top: 0; letter-spacing: 1px; font-weight: bold;">PUANLA</p>
+                <p style="font-size: 0.7rem; color: #9ab; margin-top: 0; letter-spacing: 1px;">RATE</p>
                 <div class="star-rating-v2">
                     <input type="radio" name="rating" value="5" id="v2-star5"><label for="v2-star5">★</label>
                     <input type="radio" name="rating" value="4" id="v2-star4"><label for="v2-star4">★</label>
@@ -149,15 +134,15 @@
                     <input type="radio" name="rating" value="1" id="v2-star1"><label for="v2-star1">★</label>
                 </div>
                 {{ form.comment }}
-                <button type="submit" class="submit-btn">Kaydet</button>
+                <button type="submit" class="submit-btn">Save</button>
             </form>
             {% else %}
-            <p style="font-size: 0.9rem; padding: 10px;">Giriş yapmalısın.</p>
+            <p style="font-size: 0.85rem; padding: 10px;">Login to rate.</p>
             {% endif %}
         </div>
 
         <div class="avg-rating-box">
-            <p style="font-size: 0.7rem; color: #9ab; margin: 0 0 5px 0;">ORTALAMA</p>
+            <p style="font-size: 0.7rem; color: #9ab; margin: 0 0 5px 0;">AVERAGE</p>
             <div style="display:flex; align-items:center; justify-content:center; gap:8px;">
                 <span style="font-size: 1.5rem; font-weight: bold; color: #fff;">{{ avg_rating|floatformat:1|default:"0.0" }}</span>
                 <span style="color: #00c030;">★</span>
@@ -172,11 +157,10 @@
                 <i class="fas fa-heart"></i><span>Like</span>
             </div>
             <div class="q-btn" id="btn-list" onclick="toggleAction('btn-list')">
-                <i class="fas fa-folder-plus"></i><span>List</span>
+                <i class="fas fa-plus"></i><span>List</span>
             </div>
         </div>
     </div>
-
 </div>
 
 <script>
@@ -185,13 +169,12 @@
         const btn = document.getElementById('readMoreBtn');
         if (text.classList.contains('expanded')) {
             text.classList.remove('expanded');
-            btn.innerText = '... daha fazla';
+            btn.innerText = '... more';
         } else {
             text.classList.add('expanded');
-            btn.innerText = 'daha az';
+            btn.innerText = 'less';
         }
     }
-
     function toggleAction(btnId) {
         document.getElementById(btnId).classList.toggle('active');
     }
