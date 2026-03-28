@@ -3,7 +3,6 @@
 
 {% block content %}
 <style>
-    /* ANA YAPI: Sabit ve Kaymaları Önleyen Grid */
     .container-detail {
         max-width: 1050px;
         margin: 40px auto;
@@ -15,7 +14,7 @@
         align-items: start;
     }
 
-    /* SOL KOLON: KİTAP KAPAĞI */
+    /* SOL KOLON */
     .book-aside {
         width: 210px;
         position: sticky;
@@ -31,7 +30,7 @@
         border: 1px solid #333;
     }
 
-    /* ORTA KOLON: BİLGİLER */
+    /* ORTA KOLON */
     .book-main-info h1 {
         font-size: 2rem;
         font-weight: 800;
@@ -45,24 +44,18 @@
         margin: 8px 0 20px 0;
     }
 
-    /* AÇIKLAMA: "Daha Fazla" Mantığı */
-    .description-container {
-        position: relative;
+    .description-text {
         line-height: 1.6;
         color: #9ab;
         font-size: 0.95rem;
-        margin-bottom: 30px;
-    }
-
-    .description-text {
         overflow: hidden;
         display: -webkit-box;
-        -webkit-line-clamp: 4; /* Varsayılan olarak 4 satır gösterir */
+        -webkit-line-clamp: 4;
         -webkit-box-orient: vertical;
     }
 
     .description-text.expanded {
-        display: block; /* Tıklandığında hepsini gösterir */
+        display: block;
     }
 
     .read-more-btn {
@@ -70,19 +63,18 @@
         border: none;
         color: #00c030;
         cursor: pointer;
-        padding: 0;
         font-weight: bold;
         margin-top: 5px;
-        display: inline-block;
     }
 
-    /* SAĞ KOLON: SABİT KÜÇÜK PANEL */
+    /* SAĞ PANEL */
     .action-panel {
         background: #2c3440;
         border-radius: 8px;
         width: 240px;
         position: sticky;
         top: 20px;
+        overflow: hidden;
     }
 
     .rating-section {
@@ -128,6 +120,30 @@
         margin-top: 10px;
     }
 
+    /* YENİ: READ/LIKE/LIST BUTONLARI */
+    .quick-actions {
+        display: flex;
+        justify-content: space-around;
+        padding: 12px;
+        background: #1b222b; /* Alt kısım için biraz daha koyu ton */
+        border-top: 1px solid #333;
+    }
+
+    .q-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.7rem;
+        color: #9ab;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .q-btn:hover { color: #fff; }
+    .q-btn i { font-size: 1.1rem; }
+
+    /* REVIEWS */
     .review-card {
         background: #1c1c1c;
         padding: 15px;
@@ -146,6 +162,8 @@
             <img src="{{ book.thumbnail }}" class="book-cover-main">
         {% elif book.image %}
             <img src="{{ book.image }}" class="book-cover-main">
+        {% elif book.image_url %}
+            <img src="{{ book.image_url }}" class="book-cover-main">
         {% else %}
             <div style="height: 310px; background: #222; border-radius: 4px; display: flex; flex-direction:column; align-items: center; justify-content: center; border: 1px solid #333;">
                 <span style="font-size: 2rem;">📚</span>
@@ -166,7 +184,7 @@
             <div id="descText" class="description-text">
                 {{ book.description|default:"No description available." }}
             </div>
-            {% if book.description and book.description|length > 200 %}
+            {% if book.description and book.description|length > 250 %}
                 <button id="readMoreBtn" class="read-more-btn" onclick="toggleDescription()">... more</button>
             {% endif %}
         </div>
@@ -204,7 +222,7 @@
                 <button type="submit" class="submit-btn">Save Review</button>
             </form>
             {% else %}
-            <p style="font-size: 0.8rem; margin: 0;">Log in to rate.</p>
+            <p style="font-size: 0.8rem; padding: 10px;">Log in to rate.</p>
             {% endif %}
         </div>
 
@@ -215,6 +233,12 @@
                 <span style="color: #00c030; font-size: 0.9rem;">★</span>
             </div>
         </div>
+
+        <div class="quick-actions">
+            <div class="q-btn"><span>👁️</span><span>Read</span></div>
+            <div class="q-btn"><span>🧡</span><span>Like</span></div>
+            <div class="q-btn"><span>🕒</span><span>List</span></div>
+        </div>
     </div>
 
 </div>
@@ -223,7 +247,6 @@
     function toggleDescription() {
         const text = document.getElementById('descText');
         const btn = document.getElementById('readMoreBtn');
-        
         if (text.classList.contains('expanded')) {
             text.classList.remove('expanded');
             btn.innerText = '... more';
@@ -233,5 +256,4 @@
         }
     }
 </script>
-
 {% endblock %}
