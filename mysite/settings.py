@@ -38,6 +38,7 @@ ALLOWED_HOSTS = ['.onrender.com']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
+    'jazzmin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
