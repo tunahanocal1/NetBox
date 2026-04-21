@@ -168,12 +168,12 @@
     <section class="shelf-section">
         <div class="shelf-header">
             <div class="shelf-title" style="color: #3b82f6;">
-                <i class="fas fa-folder-plus"></i> WATCHLIST
+                <i class="fas fa-folder-plus"></i> LIST
             </div>
-            <a href="{% url 'user_book_list' 'watchlist' %}" class="see-all-btn">SEE ALL</a>
+            <a href="{% url 'user_book_list' 'list' %}" class="see-all-btn">SEE ALL</a>
         </div>
         <div class="book-grid">
-            {% for book in watchlist_books|slice:":5" %}
+            {% for book in list_books|slice:":5" %}
                 <div class="book-item">
                     <a href="{% url 'book_detail' book.olid %}">
                         <img src="{{ book.thumbnail }}" alt="{{ book.title }}">
