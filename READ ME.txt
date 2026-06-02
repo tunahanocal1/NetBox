@@ -1,0 +1,182 @@
+# NetBox
+
+## Overview
+
+NetBox is a Django-based web application designed for book enthusiasts. Users can create an account, log in, search for books, manage their reading experience, and explore book-related content through a clean and modern interface.
+
+The project was developed as a Django Term Project and demonstrates the use of Django's core features, including authentication, routing, templates, static files, and deployment.
+
+---
+
+## Features
+
+### User Authentication
+
+* User Registration
+* User Login
+* User Logout
+* User Profile Page
+
+### Book Discovery
+
+* Search books using an external book database API
+* Display book covers and book information
+* Browse search results through a clean interface
+
+### User Interface
+
+* Modern dark theme design
+* Responsive layout
+* Hero landing page for visitors
+* Personalized experience for logged-in users
+
+### Deployment
+
+* Successfully deployed on Render
+* Accessible through a public URL
+
+---
+
+## Technologies Used
+
+### Backend
+
+* Python 3
+* Django 6
+
+### Frontend
+
+* HTML5
+* CSS3
+* Django Templates
+
+### Database
+
+* SQLite
+
+### Third-Party Services
+
+* Open Library API
+
+### Deployment
+
+* Render
+
+---
+
+## Installation
+
+Clone the repository:
+
+```bash
+git clone <repository-url>
+cd myproject
+```
+
+Create a virtual environment:
+
+```bash
+python -m venv venv
+```
+
+Activate the environment:
+
+macOS/Linux:
+
+```bash
+source venv/bin/activate
+```
+
+Windows:
+
+```bash
+venv\Scripts\activate
+```
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Apply migrations:
+
+```bash
+python manage.py migrate
+```
+
+Run the development server:
+
+```bash
+python manage.py runserver
+```
+
+Open:
+
+```text
+http://127.0.0.1:8000
+```
+
+---
+
+## Project Structure
+
+```text
+myproject/
+│
+├── accounts/
+│   ├── views.py
+│   ├── models.py
+│   ├── urls.py
+│   └── tests.py
+│
+├── templates/
+│   ├── accounts/
+    └── base.html
+│
+├── static/
+│   └── images/
+│
+├── mysite/
+│   └── settings.py
+│
+├── manage.py
+├── README.txt
+└── requirements.txt
+```
+
+---
+
+## Testing
+
+The project includes automated tests using Django's built-in testing framework.
+
+Tested functionality:
+
+* Home page accessibility
+* User authentication
+* Registration page accessibility
+
+Run tests:
+
+```bash
+python manage.py test
+```
+
+---
+
+## Future Improvements
+
+* Personal book library
+* Ratings and reviews
+* Favorite books list
+* Reading statistics dashboard
+* Recommendation system
+
+---
+
+## Author
+
+Tunahan Ocal
+
+Django Term Project – 2026
